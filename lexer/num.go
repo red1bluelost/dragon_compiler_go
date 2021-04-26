@@ -5,9 +5,9 @@ type Num interface {
 	GetValue() int
 }
 
-func NewNum(tag int, value int) Num {
+func NewNum(value int) Num {
 	return &numImpl{
-		tokenImpl: tokenImpl{tag: tag},
+		tokenImpl: tokenImpl{tag: NUM},
 		value:     value,
 	}
 }

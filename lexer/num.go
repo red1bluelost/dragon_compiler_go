@@ -2,7 +2,7 @@ package lexer
 
 type Num interface {
 	Token
-	getValue() int
+	GetValue() int
 }
 
 func NewNum(tag int, value int) Num {
@@ -17,6 +17,6 @@ type numImpl struct {
 	value int
 }
 
-func (n *numImpl) getValue() int {
+func (n *numImpl) GetValue() int {
 	return n.value
 }

@@ -1,7 +1,7 @@
 package lexer
 
 type Token interface {
-	getTag() int
+	GetTag() int
 }
 
 func NewToken(tag int) Token {
@@ -12,6 +12,6 @@ type tokenImpl struct {
 	tag int
 }
 
-func (t *tokenImpl) getTag() int {
+func (t *tokenImpl) GetTag() int {
 	return t.tag
 }

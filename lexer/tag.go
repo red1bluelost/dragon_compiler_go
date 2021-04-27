@@ -5,4 +5,8 @@ const (
 	ID
 	TRUE
 	FALSE
+	EQ  // ==
+	NEQ // !=
+	LEQ // <=
+	GEQ // >=
 )

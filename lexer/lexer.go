@@ -49,9 +49,20 @@ func (l *lexerImpl) Scan() Token {
 	if unicode.IsLetter(rune(l.peek)) {
 		return l.handleWord()
 	}
-	t := NewToken(int(l.peek))
-	l.peek = ' '
-	return t
+	switch l.peek {
+	case '<':
+		return l.handleTwoCharToken('=', LEQ)
+	case '>':
+		return l.handleTwoCharToken('=', GEQ)
+	case '=':
+		return l.handleTwoCharToken('=', EQ)
+	case '!':
+		return l.handleTwoCharToken('=', NEQ)
+	}
+	defer func() {
+		l.peek = ' '
+	}()
+	return NewToken(int(l.peek))
 }
 
 // grabNextChar handles pulling in the input characters, no more input returns EOF
@@ -151,4 +162,18 @@ func (l *lexerImpl) handleWord() Token {
 		l.reserve(w)
 		return w
 	}
+}
+
+func (l *lexerImpl) handleTwoCharToken(second byte, tag int) Token {
+	if l.next == second {
+		defer func() {
+			l.peek = ' '
+			l.next = ' '
+		}()
+		return NewWord(tag, string([]byte{l.peek, l.next}))
+	}
+	defer func() {
+		l.peek = ' '
+	}()
+	return NewToken(int(l.peek))
 }

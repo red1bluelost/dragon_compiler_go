@@ -74,9 +74,9 @@ func (l *lexerImpl) handleDigit() Token {
 			break
 		}
 		v = 10*v + i
-		l.peek, err = ReadCharStdio()
+		l.peek, _ = ReadCharStdio()
 		if err == io.EOF {
-			return nil
+			break
 		}
 	}
 	return NewNum(v)
@@ -90,7 +90,7 @@ func (l *lexerImpl) handleWord() Token {
 		var err error
 		l.peek, err = ReadCharStdio()
 		if err == io.EOF {
-			return nil
+			break
 		}
 		if !(unicode.IsLetter(rune(l.peek)) || unicode.IsDigit(rune(l.peek))) {
 			break

@@ -1,3 +1,6 @@
 .idea/
 *.exe
+
+# Some manual tests to ignore
 dumbtest.go
+testinput.txt

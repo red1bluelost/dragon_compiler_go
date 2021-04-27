@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"io"
 	"strconv"
 	"unicode"
 )
@@ -36,14 +37,34 @@ func (l *lexerImpl) GetLine() int {
 }
 
 func (l *lexerImpl) Scan() Token {
+	if err := l.clearUselessCharacters(); err == io.EOF {
+		return nil
+	}
 	if unicode.IsDigit(rune(l.peek)) {
 		return l.handleDigit()
 	}
 	if unicode.IsLetter(rune(l.peek)) {
 		return l.handleWord()
 	}
-	l.peek = ' '
 	return NewToken(int(l.peek))
+}
+
+// clearUselessCharacters factors out hte handling of white space and comments
+func (l *lexerImpl) clearUselessCharacters() (err error) {
+	for {
+		l.peek, err = ReadCharStdio()
+		switch l.peek {
+		case ' ':
+		case '\t':
+			continue
+		case '\n':
+		case '\r':
+			l.line++
+			continue
+		default:
+			return err
+		}
+	}
 }
 
 // handleDigit factors out the handling of a digit in the lexer
@@ -55,7 +76,10 @@ func (l *lexerImpl) handleDigit() Token {
 			break
 		}
 		v = 10*v + i
-		l.peek, _ = ReadCharStdio()
+		l.peek, err = ReadCharStdio()
+		if err == io.EOF {
+			return nil
+		}
 	}
 	return NewNum(v)
 }
@@ -65,7 +89,11 @@ func (l *lexerImpl) handleWord() Token {
 	buf := make([]byte, 1)
 	for {
 		buf = append(buf, l.peek)
-		l.peek, _ = ReadCharStdio()
+		var err error
+		l.peek, err = ReadCharStdio()
+		if err == io.EOF {
+			return nil
+		}
 		if !(unicode.IsLetter(rune(l.peek)) || unicode.IsDigit(rune(l.peek))) {
 			break
 		}

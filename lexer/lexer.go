@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"io"
 	"strconv"
 	"unicode"
@@ -70,6 +71,18 @@ func (l *lexerImpl) clearUselessCharacters() (err error) {
 		switch l.peek {
 		case 0:
 			return io.EOF
+		case '/':
+			if l.next == '/' {
+				if err = l.handleSingleComment(); err != nil {
+					return err
+				}
+			} else if l.next == '*' {
+				if err = l.handleBlockComment(); err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
 		case ' ', '\t', '\r':
 		case '\n':
 			l.line++
@@ -77,6 +90,33 @@ func (l *lexerImpl) clearUselessCharacters() (err error) {
 			return err
 		}
 		err = l.grabNextChar()
+	}
+}
+
+// handleSingleComment factors out the process of ignoreing single comments
+func (l *lexerImpl) handleSingleComment() error {
+	for {
+		err := l.grabNextChar()
+		if err == io.EOF {
+			return err
+		} else if l.next == '\n' {
+			return nil
+		}
+	}
+}
+
+// handleBlockComment factors out the process of ignoring block comments
+func (l *lexerImpl) handleBlockComment() error {
+	_ = l.grabNextChar()
+	for {
+		err := l.grabNextChar()
+		if err == io.EOF {
+			fmt.Printf("EOF, block comment should be closed.\n")
+			return err
+		} else if l.peek == '*' && l.next == '/' {
+			l.peek, l.next = ' ', ' '
+			return nil
+		}
 	}
 }
 

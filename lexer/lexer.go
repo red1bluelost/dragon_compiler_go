@@ -54,11 +54,9 @@ func (l *lexerImpl) clearUselessCharacters() (err error) {
 	for {
 		l.peek, err = ReadCharStdio()
 		switch l.peek {
-		case ' ':
-		case '\t':
+		case ' ', '\t', '\r':
 			continue
 		case '\n':
-		case '\r':
 			l.line++
 			continue
 		default:

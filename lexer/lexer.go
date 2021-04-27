@@ -58,6 +58,10 @@ func (l *lexerImpl) Scan() Token {
 		return l.handleTwoCharToken('=', EQ)
 	case '!':
 		return l.handleTwoCharToken('=', NEQ)
+	case '+':
+		return l.handleTwoCharToken('+', INC)
+	case '-':
+		return l.handleTwoCharToken('-', DEC)
 	}
 	defer func() {
 		l.peek = ' '

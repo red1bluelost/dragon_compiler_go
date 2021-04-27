@@ -9,4 +9,6 @@ const (
 	NEQ // !=
 	LEQ // <=
 	GEQ // >=
+	INC // ++
+	DEC // --
 )

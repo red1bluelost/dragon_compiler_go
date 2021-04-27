@@ -70,4 +70,31 @@ func TestLexer_Scan(t *testing.T) {
 			tester(l, tests)
 		})
 	})
+	t.Run("Textbook exercise 2.6.2", func(t *testing.T) {
+		t.Run("relational operators", func(t *testing.T) {
+			s := "< <= == != >= >"
+			l := NewLexer(strings.NewReader(s))
+			tests := []test{
+				{NewToken('<')},
+				{NewWord(LEQ, "<=")},
+				{NewWord(EQ, "==")},
+				{NewWord(NEQ, "!=")},
+				{NewWord(GEQ, ">=")},
+				{NewToken('>')},
+			}
+			tester(l, tests)
+		})
+	})
+	t.Run("Textbook exercise 2.6.3", func(t *testing.T) {
+		t.Run("floating point numbers", func(t *testing.T) {
+			s := "2. 3.14 .5"
+			l := NewLexer(strings.NewReader(s))
+			tests := []test{
+				{NewFloat(2.)},
+				{NewFloat(3.14)},
+				{NewFloat(.5)},
+			}
+			tester(l, tests)
+		})
+	})
 }

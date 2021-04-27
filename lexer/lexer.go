@@ -15,6 +15,7 @@ func NewLexer() Lexer {
 	l := &lexerImpl{
 		line:  1,
 		peek:  ' ',
+		next:  ' ',
 		words: make(map[string]Word),
 	}
 	l.reserve(NewWord(TRUE, "true"))
@@ -25,6 +26,7 @@ func NewLexer() Lexer {
 type lexerImpl struct {
 	line  int
 	peek  byte
+	next  byte
 	words map[string]Word
 }
 
@@ -46,22 +48,35 @@ func (l *lexerImpl) Scan() Token {
 	if unicode.IsLetter(rune(l.peek)) {
 		return l.handleWord()
 	}
-	return NewToken(int(l.peek))
+	t := NewToken(int(l.peek))
+	l.peek = ' '
+	return t
+}
+
+// grabNextChar handles pulling in the input characters, no more input returns EOF
+func (l *lexerImpl) grabNextChar() (err error) {
+	l.peek = l.next
+	l.next, err = ReadCharStdio()
+	if l.peek == 0 {
+		return err
+	} else {
+		return nil
+	}
 }
 
 // clearUselessCharacters factors out hte handling of white space and comments
 func (l *lexerImpl) clearUselessCharacters() (err error) {
 	for {
-		l.peek, err = ReadCharStdio()
 		switch l.peek {
+		case 0:
+			return io.EOF
 		case ' ', '\t', '\r':
-			continue
 		case '\n':
 			l.line++
-			continue
 		default:
 			return err
 		}
+		err = l.grabNextChar()
 	}
 }
 
@@ -74,10 +89,7 @@ func (l *lexerImpl) handleDigit() Token {
 			break
 		}
 		v = 10*v + i
-		l.peek, _ = ReadCharStdio()
-		if err == io.EOF {
-			break
-		}
+		_ = l.grabNextChar()
 	}
 	return NewNum(v)
 }
@@ -87,12 +99,7 @@ func (l *lexerImpl) handleWord() Token {
 	buf := make([]byte, 1)
 	for {
 		buf = append(buf, l.peek)
-		var err error
-		l.peek, err = ReadCharStdio()
-		if err == io.EOF {
-			break
-		}
-		if !(unicode.IsLetter(rune(l.peek)) || unicode.IsDigit(rune(l.peek))) {
+		if err := l.grabNextChar(); err != nil || !(unicode.IsLetter(rune(l.peek)) || unicode.IsDigit(rune(l.peek))) {
 			break
 		}
 	}

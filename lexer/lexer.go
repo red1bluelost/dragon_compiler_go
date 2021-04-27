@@ -40,6 +40,9 @@ func (l *lexerImpl) GetLine() int {
 }
 
 func (l *lexerImpl) Scan() Token {
+	defer func() {
+		l.peek = ' '
+	}()
 	if err := l.clearUselessCharacters(); err == io.EOF {
 		return nil
 	}
@@ -62,10 +65,11 @@ func (l *lexerImpl) Scan() Token {
 		return l.handleTwoCharToken('+', INC)
 	case '-':
 		return l.handleTwoCharToken('-', DEC)
+	case '.':
+		if unicode.IsDigit(rune(l.next)) {
+			return l.handleFloat(0)
+		}
 	}
-	defer func() {
-		l.peek = ' '
-	}()
 	return NewToken(int(l.peek))
 }
 
@@ -146,7 +150,26 @@ func (l *lexerImpl) handleDigit() Token {
 		v = 10*v + i
 		_ = l.grabNextChar()
 	}
+	if l.peek == '.' {
+		return l.handleFloat(v)
+	}
 	return NewNum(v)
+}
+
+// handleFloat factors out the handling of a float in the lexer
+func (l *lexerImpl) handleFloat(num int) Token {
+	_ = l.grabNextChar() //clear the decimal
+	v, d := 0, 1.
+	for {
+		i, err := strconv.Atoi(string(l.peek))
+		if err != nil {
+			break
+		}
+		d *= 0.1
+		v = 10*v + i
+		_ = l.grabNextChar()
+	}
+	return NewFloat(float64(num) + float64(v)*d)
 }
 
 // handleWord factors out the handling of a word in the lexer
@@ -171,13 +194,9 @@ func (l *lexerImpl) handleWord() Token {
 func (l *lexerImpl) handleTwoCharToken(second byte, tag int) Token {
 	if l.next == second {
 		defer func() {
-			l.peek = ' '
 			l.next = ' '
 		}()
 		return NewWord(tag, string([]byte{l.peek, l.next}))
 	}
-	defer func() {
-		l.peek = ' '
-	}()
 	return NewToken(int(l.peek))
 }

@@ -10,6 +10,17 @@ type Lexer interface {
 	Scan() Token
 }
 
+func NewLexer() Lexer {
+	l := &lexerImpl{
+		line:  1,
+		peek:  ' ',
+		words: make(map[string]Word),
+	}
+	l.reserve(NewWord(TRUE, "true"))
+	l.reserve(NewWord(FALSE, "false"))
+	return l
+}
+
 type lexerImpl struct {
 	line  int
 	peek  byte

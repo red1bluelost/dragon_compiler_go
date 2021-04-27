@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"strconv"
@@ -12,12 +13,13 @@ type Lexer interface {
 	Scan() Token
 }
 
-func NewLexer() Lexer {
+func NewLexer(reader io.Reader) Lexer {
 	l := &lexerImpl{
-		line:  1,
-		peek:  ' ',
-		next:  ' ',
-		words: make(map[string]Word),
+		line:   1,
+		peek:   ' ',
+		next:   ' ',
+		reader: bufio.NewReader(reader),
+		words:  make(map[string]Word),
 	}
 	l.reserve(NewWord(TRUE, "true"))
 	l.reserve(NewWord(FALSE, "false"))
@@ -25,9 +27,11 @@ func NewLexer() Lexer {
 }
 
 type lexerImpl struct {
-	line  int
-	peek  byte
-	next  byte
+	line   int
+	peek   byte
+	next   byte
+	reader *bufio.Reader
+
 	words map[string]Word
 }
 
@@ -76,7 +80,7 @@ func (l *lexerImpl) Scan() Token {
 // grabNextChar handles pulling in the input characters, no more input returns EOF
 func (l *lexerImpl) grabNextChar() (err error) {
 	l.peek = l.next
-	l.next, err = ReadCharStdio()
+	l.next, err = l.reader.ReadByte()
 	if l.peek == 0 {
 		return err
 	} else {
@@ -174,7 +178,7 @@ func (l *lexerImpl) handleFloat(num int) Token {
 
 // handleWord factors out the handling of a word in the lexer
 func (l *lexerImpl) handleWord() Token {
-	buf := make([]byte, 1)
+	buf := make([]byte, 0)
 	for {
 		buf = append(buf, l.peek)
 		if err := l.grabNextChar(); err != nil || !(unicode.IsLetter(rune(l.peek)) || unicode.IsDigit(rune(l.peek))) {

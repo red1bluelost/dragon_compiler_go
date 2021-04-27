@@ -1,0 +1,44 @@
+package lexer
+
+import (
+	"reflect"
+	"strings"
+	"testing"
+)
+
+func TestLexer_Scan(t *testing.T) {
+	type test struct {
+		want Token
+	}
+	tester := func(l Lexer, tests []test) {
+		for _, tt := range tests {
+			if got := l.Scan(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Lexer.Scan() = %v, want %v", got, tt.want)
+			}
+		}
+	}
+	t.Run("Textbook examples", func(t *testing.T) {
+		t.Run("Simple input 1", func(t *testing.T) {
+			l := NewLexer(strings.NewReader("31 + 28 + 59"))
+			tests := []test{
+				{NewNum(31)},
+				{NewToken('+')},
+				{NewNum(28)},
+				{NewToken('+')},
+				{NewNum(59)},
+			}
+			tester(l, tests)
+		})
+		t.Run("Simple input 2", func(t *testing.T) {
+			l := NewLexer(strings.NewReader("count = count + increment"))
+			tests := []test{
+				{NewWord(ID, "count")},
+				{NewToken('=')},
+				{NewWord(ID, "count")},
+				{NewToken('+')},
+				{NewWord(ID, "increment")},
+			}
+			tester(l, tests)
+		})
+	})
+}

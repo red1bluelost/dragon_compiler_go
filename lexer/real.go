@@ -24,5 +24,5 @@ func (r *realImpl) GetValue() float64 {
 }
 
 func (r *realImpl) String() string {
-	return fmt.Sprintf("%f", r.value)
+	return fmt.Sprintf("%g", r.value)
 }

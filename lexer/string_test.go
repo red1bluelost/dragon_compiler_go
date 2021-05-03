@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -47,11 +46,11 @@ func TestReal_String(t *testing.T) {
 		input Token
 		want  string
 	}{
-		{NewReal(3.3), fmt.Sprintf("%f", 3.3)},
-		{NewReal(4.32), fmt.Sprintf("%f", 4.32)},
-		{NewReal(2.913), fmt.Sprintf("%f", 2.913)},
-		{NewReal(-420.69), fmt.Sprintf("%f", -420.69)},
-		{NewReal(-13.49), fmt.Sprintf("%f", -13.49)},
+		{NewReal(3.3), "3.3"},
+		{NewReal(4.32), "4.32"},
+		{NewReal(2.913), "2.913"},
+		{NewReal(-420.69), "-420.69"},
+		{NewReal(-13.49), "-13.49"},
 	}
 	for _, tt := range tests {
 		if got := tt.input.String(); !reflect.DeepEqual(got, tt.want) {

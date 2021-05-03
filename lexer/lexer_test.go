@@ -76,10 +76,10 @@ func TestLexer_Scan(t *testing.T) {
 			l := NewLexer(strings.NewReader(s))
 			tests := []test{
 				{NewToken('<')},
-				{NewWord(LEQ, "<=")},
+				{NewWord(LE, "<=")},
 				{NewWord(EQ, "==")},
-				{NewWord(NEQ, "!=")},
-				{NewWord(GEQ, ">=")},
+				{NewWord(NE, "!=")},
+				{NewWord(GE, ">=")},
 				{NewToken('>')},
 			}
 			tester(l, tests)

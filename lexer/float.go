@@ -7,7 +7,7 @@ type Float interface {
 
 func NewFloat(value float64) Float {
 	return &floatImpl{
-		tokenImpl: tokenImpl{tag: FLOAT},
+		tokenImpl: tokenImpl{tag: REAL},
 		value:     value,
 	}
 }

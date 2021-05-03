@@ -1,15 +1,26 @@
 package lexer
 
 const (
-	NUM = iota + 256
-	FLOAT
-	ID
-	TRUE
+	AND = iota + 256
+	BASIC
+	BREAK
+	DO
+	ELSE
+	EQ // ==
 	FALSE
-	EQ  // ==
-	NEQ // !=
-	LEQ // <=
-	GEQ // >=
+	GE // >=
+	ID
+	IF
+	INDEX
+	LE // <=
+	MINUS
+	NE // !=
+	NUM
+	OR
+	REAL
+	TEMP
+	TRUE
+	WHILE
 	INC // ++
 	DEC // --
 )

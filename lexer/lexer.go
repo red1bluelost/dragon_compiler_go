@@ -58,13 +58,13 @@ func (l *lexerImpl) Scan() Token {
 	}
 	switch l.peek {
 	case '<':
-		return l.handleTwoCharToken('=', LEQ)
+		return l.handleTwoCharToken('=', LE)
 	case '>':
-		return l.handleTwoCharToken('=', GEQ)
+		return l.handleTwoCharToken('=', GE)
 	case '=':
 		return l.handleTwoCharToken('=', EQ)
 	case '!':
-		return l.handleTwoCharToken('=', NEQ)
+		return l.handleTwoCharToken('=', NE)
 	case '+':
 		return l.handleTwoCharToken('+', INC)
 	case '-':

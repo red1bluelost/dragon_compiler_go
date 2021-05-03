@@ -90,9 +90,9 @@ func TestLexer_Scan(t *testing.T) {
 			s := "2. 3.14 .5"
 			l := NewLexer(strings.NewReader(s))
 			tests := []test{
-				{NewFloat(2.)},
-				{NewFloat(3.14)},
-				{NewFloat(.5)},
+				{NewReal(2.)},
+				{NewReal(3.14)},
+				{NewReal(.5)},
 			}
 			tester(l, tests)
 		})

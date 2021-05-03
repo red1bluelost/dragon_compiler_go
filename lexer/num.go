@@ -1,5 +1,7 @@
 package lexer
 
+import "fmt"
+
 type Num interface {
 	Token
 	GetValue() int
@@ -19,4 +21,8 @@ type numImpl struct {
 
 func (n *numImpl) GetValue() int {
 	return n.value
+}
+
+func (n *numImpl) String() string {
+	return fmt.Sprintf("%d", n.value)
 }

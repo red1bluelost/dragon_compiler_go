@@ -173,7 +173,7 @@ func (l *lexerImpl) handleFloat(num int) Token {
 		v = 10*v + i
 		_ = l.grabNextChar()
 	}
-	return NewFloat(float64(num) + float64(v)*d)
+	return NewReal(float64(num) + float64(v)*d)
 }
 
 // handleWord factors out the handling of a word in the lexer

@@ -17,6 +17,23 @@ type wordImpl struct {
 	lexeme string
 }
 
-func (n *wordImpl) GetLexeme() string {
-	return n.lexeme
+func (w *wordImpl) GetLexeme() string {
+	return w.lexeme
 }
+
+func (w *wordImpl) String() string {
+	return w.lexeme
+}
+
+var (
+	And   = NewWord(AND, "&&")
+	Or    = NewWord(OR, "||")
+	Eq    = NewWord(EQ, "==")
+	Ne    = NewWord(NE, "!=")
+	Le    = NewWord(LE, "<=")
+	Ge    = NewWord(GE, ">=")
+	Minus = NewWord(MINUS, "minus")
+	True  = NewWord(TRUE, "true")
+	False = NewWord(FALSE, "false")
+	Temp  = NewWord(TEMP, "t")
+)

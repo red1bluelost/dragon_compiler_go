@@ -59,3 +59,21 @@ func TestReal_String(t *testing.T) {
 		}
 	}
 }
+
+func TestWord_String(t *testing.T) {
+	tests := []struct {
+		input Token
+		want  string
+	}{
+		{NewWord(ID, "i"), "i"},
+		{NewWord(ID, "retval"), "retval"},
+		{NewWord(ID, "foo"), "foo"},
+		{And, "&&"},
+		{Minus, "minus"},
+	}
+	for _, tt := range tests {
+		if got := tt.input.String(); !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("Lexer.Scan() = %v, want %v", got, tt.want)
+		}
+	}
+}

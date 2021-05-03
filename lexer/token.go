@@ -1,6 +1,9 @@
 package lexer
 
+import "fmt"
+
 type Token interface {
+	fmt.Stringer
 	GetTag() int
 }
 
@@ -14,4 +17,8 @@ type tokenImpl struct {
 
 func (t *tokenImpl) GetTag() int {
 	return t.tag
+}
+
+func (t *tokenImpl) String() string {
+	return fmt.Sprintf("%c", t.tag)
 }
